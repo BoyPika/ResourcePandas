@@ -2,13 +2,13 @@ package com.mrbysco.resourcepandas.registry;
 
 import com.mrbysco.resourcepandas.Reference;
 import com.mrbysco.resourcepandas.entity.ResourcePandaEntity;
+import com.mrbysco.resourcepandas.item.PandaDataComponents;
 import com.mrbysco.resourcepandas.item.PandaSpawnEggItem;
 import com.mrbysco.resourcepandas.recipe.PandaRecipe;
 import com.mrbysco.resourcepandas.recipe.PandaRecipes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -43,11 +43,8 @@ public class PandaRegistry {
 				ClientLevel level = Objects.requireNonNull(Minecraft.getInstance().level);
 				for (RecipeHolder<PandaRecipe> recipe : level.getRecipeManager().getAllRecipesFor(PandaRecipes.PANDA_RECIPE_TYPE.get())) {
 					ItemStack storageItem = new ItemStack(PandaRegistry.RESOURCE_PANDA_SPAWN_EGG.get());
-					CompoundTag tag = storageItem.getTag() == null ? new CompoundTag() : storageItem.getTag();
-					tag.putInt("primaryColor", Integer.decode("0x" + recipe.value().getHexColor().replaceFirst("#", "")));
-					tag.putString("resourceType", recipe.id().toString());
-					storageItem.setTag(tag);
-
+					storageItem.set(PandaDataComponents.COLOR, Integer.decode("0x" + recipe.value().getHexColor().replaceFirst("#", "")));
+					storageItem.set(PandaDataComponents.RESOURCE_TYPE, recipe.id());
 					output.accept(storageItem);
 				}
 			}).build());

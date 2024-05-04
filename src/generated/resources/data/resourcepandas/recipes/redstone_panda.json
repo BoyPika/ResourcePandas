@@ -3,11 +3,11 @@
   "chance": 0.6,
   "hexColor": "#aa0f01",
   "ingredient": {
-    "tag": "forge:storage_blocks/redstone"
+    "tag": "c:storage_blocks/redstone"
   },
   "name": "Redstone",
   "result": {
     "count": 1,
-    "result": "minecraft:redstone"
+    "id": "minecraft:redstone"
   }
 }

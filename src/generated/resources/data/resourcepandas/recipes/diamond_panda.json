@@ -3,11 +3,11 @@
   "chance": 0.11,
   "hexColor": "#a1fbe8",
   "ingredient": {
-    "tag": "forge:storage_blocks/diamond"
+    "tag": "c:storage_blocks/diamond"
   },
   "name": "Diamond",
   "result": {
     "count": 1,
-    "result": "minecraft:diamond"
+    "id": "minecraft:diamond"
   }
 }

@@ -3,11 +3,11 @@
   "chance": 0.6,
   "hexColor": "#d9dfe7",
   "ingredient": {
-    "tag": "forge:storage_blocks/iron"
+    "tag": "c:storage_blocks/iron"
   },
   "name": "Iron",
   "result": {
     "count": 1,
-    "result": "minecraft:iron_nugget"
+    "id": "minecraft:iron_nugget"
   }
 }

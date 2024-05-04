@@ -8,7 +8,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -42,21 +41,20 @@ public class PandaSpawnEggItem extends DeferredSpawnEggItem {
 			return InteractionResult.SUCCESS;
 		} else {
 			ItemStack itemstack = context.getItemInHand();
+			ResourceLocation resourceType = itemstack.get(PandaDataComponents.RESOURCE_TYPE);
 			BlockPos blockpos = context.getClickedPos();
 			Direction direction = context.getClickedFace();
 			BlockState blockstate = level.getBlockState(blockpos);
-			CompoundTag tag = itemstack.getTag() == null ? new CompoundTag() : itemstack.getTag();
 			if (blockstate.is(Blocks.SPAWNER)) {
 				BlockEntity blockentity = level.getBlockEntity(blockpos);
 				if (blockentity instanceof SpawnerBlockEntity spawnerblockentity) {
 					EntityType<ResourcePandaEntity> type = PandaRegistry.RESOURCE_PANDA.get();
-					if (tag.contains("resourceType")) {
-						String resourceType = tag.getString("resourceType");
+					if (resourceType != null) {
 						List<RecipeHolder<PandaRecipe>> recipes = new ArrayList<>(level.getRecipeManager().getAllRecipesFor(PandaRecipes.PANDA_RECIPE_TYPE.get()));
-						recipes.removeIf((recipe) -> !recipe.id().equals(ResourceLocation.tryParse(resourceType)));
+						recipes.removeIf((recipe) -> !recipe.id().equals(resourceType));
 						ResourcePandaEntity panda = type.create(level);
 						if (panda != null) {
-							initializePanda(level, panda, tag);
+							initializePanda(panda, resourceType);
 						} else {
 							spawnerblockentity.setEntityId(type, level.getRandom());
 						}
@@ -80,7 +78,7 @@ public class PandaSpawnEggItem extends DeferredSpawnEggItem {
 			EntityType<ResourcePandaEntity> type = PandaRegistry.RESOURCE_PANDA.get();
 			ResourcePandaEntity panda = (ResourcePandaEntity) type.spawn((ServerLevel) level, itemstack, context.getPlayer(), pos2, MobSpawnType.SPAWN_EGG, true, !Objects.equals(blockpos, pos2) && direction == Direction.UP);
 			if (panda != null) {
-				initializePanda(level, panda, tag);
+				initializePanda(panda, resourceType);
 				itemstack.shrink(1);
 			}
 
@@ -88,32 +86,29 @@ public class PandaSpawnEggItem extends DeferredSpawnEggItem {
 		}
 	}
 
-	public ResourcePandaEntity initializePanda(Level level, ResourcePandaEntity panda, CompoundTag tag) {
-		if (tag.contains("resourceType")) {
-			panda.setResourceVariant(tag.getString("resourceType"));
+	public ResourcePandaEntity initializePanda(ResourcePandaEntity panda, @Nullable ResourceLocation resourceType) {
+		if (resourceType != null) {
+			panda.setResourceVariant(resourceType.toString());
 			panda.refresh();
 		}
 		return panda;
 	}
 
+
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flagIn) {
-		super.appendHoverText(stack, level, tooltip, flagIn);
-		CompoundTag tag = stack.hasTag() ? stack.getTag() : new CompoundTag();
-		if (tag != null && !tag.getString("resourceType").isEmpty()) {
-			ResourceLocation location = ResourceLocation.tryParse(tag.getString("resourceType"));
-			if (location != null) {
-				if (Screen.hasShiftDown()) {
-					tooltip.add(Component.literal("Resource: ").withStyle(ChatFormatting.YELLOW).append(Component.literal(location.toString()).withStyle(ChatFormatting.GOLD)));
-				} else {
-					tooltip.add(Component.literal("Resource: ").withStyle(ChatFormatting.YELLOW).append(Component.literal(location.getPath()).withStyle(ChatFormatting.GOLD)));
-				}
+	public void appendHoverText(ItemStack stack, TooltipContext pContext, List<Component> tooltip, TooltipFlag flagIn) {
+		super.appendHoverText(stack, pContext, tooltip, flagIn);
+		ResourceLocation resourceType = stack.get(PandaDataComponents.RESOURCE_TYPE);
+		if (resourceType != null) {
+			if (Screen.hasShiftDown()) {
+				tooltip.add(Component.literal("Resource: ").withStyle(ChatFormatting.YELLOW).append(Component.literal(resourceType.toString()).withStyle(ChatFormatting.GOLD)));
+			} else {
+				tooltip.add(Component.literal("Resource: ").withStyle(ChatFormatting.YELLOW).append(Component.literal(resourceType.getPath()).withStyle(ChatFormatting.GOLD)));
 			}
 		}
 	}
 
 	public int getColor(ItemStack stack, int tintIndex) {
-		CompoundTag tag = stack.getTag();
-		return tintIndex == 0 ? (tag != null && tag.contains("primaryColor") ? tag.getInt("primaryColor") : 15198183) : this.getColor(1);
+		return tintIndex == 0 ? (stack.has(PandaDataComponents.COLOR) ? stack.get(PandaDataComponents.COLOR) : 15198183) : this.getColor(1);
 	}
 }

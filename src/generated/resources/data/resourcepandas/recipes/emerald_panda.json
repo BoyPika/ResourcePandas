@@ -3,11 +3,11 @@
   "chance": 0.08,
   "hexColor": "#17dd62",
   "ingredient": {
-    "tag": "forge:storage_blocks/emerald"
+    "tag": "c:storage_blocks/emerald"
   },
   "name": "Emerald",
   "result": {
     "count": 1,
-    "result": "minecraft:emerald"
+    "id": "minecraft:emerald"
   }
 }

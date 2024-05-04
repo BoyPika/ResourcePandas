@@ -3,11 +3,11 @@
   "chance": 0.6,
   "hexColor": "#363636",
   "ingredient": {
-    "tag": "forge:storage_blocks/coal"
+    "tag": "c:storage_blocks/coal"
   },
   "name": "Coal",
   "result": {
     "count": 1,
-    "result": "minecraft:coal"
+    "id": "minecraft:coal"
   }
 }

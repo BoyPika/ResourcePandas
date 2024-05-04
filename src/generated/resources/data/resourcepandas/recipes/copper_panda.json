@@ -3,11 +3,11 @@
   "chance": 0.6,
   "hexColor": "#e77c56",
   "ingredient": {
-    "tag": "forge:storage_blocks/copper"
+    "tag": "c:storage_blocks/copper"
   },
   "name": "Copper",
   "result": {
     "count": 1,
-    "result": "minecraft:copper_ingot"
+    "id": "minecraft:copper_ingot"
   }
 }

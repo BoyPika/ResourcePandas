@@ -3,11 +3,11 @@
   "chance": 0.06,
   "hexColor": "#4c4143",
   "ingredient": {
-    "tag": "forge:storage_blocks/netherite"
+    "tag": "c:storage_blocks/netherite"
   },
   "name": "Netherite",
   "result": {
     "count": 1,
-    "result": "minecraft:netherite_scrap"
+    "id": "minecraft:netherite_scrap"
   }
 }

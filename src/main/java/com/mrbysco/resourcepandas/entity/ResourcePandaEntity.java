@@ -1,6 +1,7 @@
 package com.mrbysco.resourcepandas.entity;
 
 import com.mrbysco.resourcepandas.Reference;
+import com.mrbysco.resourcepandas.item.PandaDataComponents;
 import com.mrbysco.resourcepandas.recipe.PandaRecipe;
 import com.mrbysco.resourcepandas.recipe.PandaRecipes;
 import com.mrbysco.resourcepandas.registry.PandaRegistry;
@@ -63,13 +64,13 @@ public class ResourcePandaEntity extends Panda {
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		this.entityData.define(RESOURCE_VARIANT, "");
-		this.entityData.define(RESOURCE_COLOR, "#FFFFFF");
-		this.entityData.define(RESOURCE_ALPHA, 1.0F);
-		this.entityData.define(RESOURCE_NAME, "");
-		this.entityData.define(TRANSFORMED, false);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(RESOURCE_VARIANT, "");
+		builder.define(RESOURCE_COLOR, "#FFFFFF");
+		builder.define(RESOURCE_ALPHA, 1.0F);
+		builder.define(RESOURCE_NAME, "");
+		builder.define(TRANSFORMED, false);
 	}
 
 	@Override
@@ -80,10 +81,8 @@ public class ResourcePandaEntity extends Panda {
 	@Override
 	public ItemStack getPickedResult(HitResult target) {
 		ItemStack stack = new ItemStack(PandaRegistry.RESOURCE_PANDA_SPAWN_EGG.get());
-		CompoundTag compoundNBT = stack.getOrCreateTag();
-		compoundNBT.putString("resourceType", getResourceVariant().toString());
-		compoundNBT.putInt("primaryColor", Integer.decode("0x" + getPandaRecipe().value().getHexColor().replaceFirst("#", "")));
-		stack.setTag(compoundNBT);
+		stack.set(PandaDataComponents.RESOURCE_TYPE, getResourceVariant());
+		stack.set(PandaDataComponents.COLOR, Integer.decode("0x" + getPandaRecipe().value().getHexColor().replaceFirst("#", "")));
 		return stack;
 	}
 
@@ -282,8 +281,8 @@ public class ResourcePandaEntity extends Panda {
 
 	@Nullable
 	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor levelAccessor, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
-		SpawnGroupData entityData = super.finalizeSpawn(levelAccessor, difficultyIn, reason, spawnDataIn, dataTag);
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor levelAccessor, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn) {
+		SpawnGroupData entityData = super.finalizeSpawn(levelAccessor, difficultyIn, reason, spawnDataIn);
 		this.setMainGene(Gene.WEAK);
 		this.setHiddenGene(Gene.WEAK);
 		if (reason == MobSpawnType.SPAWN_EGG || reason == MobSpawnType.SPAWNER) {

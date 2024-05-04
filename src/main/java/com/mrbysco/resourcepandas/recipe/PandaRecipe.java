@@ -1,10 +1,12 @@
 package com.mrbysco.resourcepandas.recipe;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -12,7 +14,6 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 public class PandaRecipe implements Recipe<Container> {
 	protected final String name;
@@ -42,8 +43,8 @@ public class PandaRecipe implements Recipe<Container> {
 	}
 
 	@Override
-	public ItemStack assemble(Container inventory, RegistryAccess access) {
-		return getResultItem(access);
+	public ItemStack assemble(Container inventory, HolderLookup.Provider provider) {
+		return getResultItem(provider);
 	}
 
 	@Override
@@ -58,7 +59,7 @@ public class PandaRecipe implements Recipe<Container> {
 	}
 
 	@Override
-	public ItemStack getResultItem(RegistryAccess access) {
+	public ItemStack getResultItem(HolderLookup.Provider provider) {
 		return this.result.copy();
 	}
 
@@ -85,40 +86,45 @@ public class PandaRecipe implements Recipe<Container> {
 	}
 
 	public static class Serializer implements RecipeSerializer<PandaRecipe> {
-		public static final Codec<PandaRecipe> CODEC = RecordCodecBuilder.create(
+		public static final MapCodec<PandaRecipe> CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
 								Codec.STRING.fieldOf("name").forGetter(recipe -> recipe.name),
 								Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(recipe -> recipe.ingredient),
-								ItemStack.RESULT_CODEC.fieldOf("result").forGetter(recipe -> recipe.result),
+								ItemStack.STRICT_CODEC.fieldOf("result").forGetter(recipe -> recipe.result),
 								Codec.STRING.optionalFieldOf("hexColor", "#ffffff").forGetter(recipe -> recipe.hexColor),
 								Codec.FLOAT.optionalFieldOf("alpha", 1.0F).forGetter(recipe -> recipe.alpha),
 								Codec.FLOAT.optionalFieldOf("chance", 1.0F).forGetter(recipe -> recipe.chance)
 						)
 						.apply(instance, PandaRecipe::new)
 		);
+		public static final StreamCodec<RegistryFriendlyByteBuf, PandaRecipe> STREAM_CODEC = StreamCodec.of(
+				PandaRecipe.Serializer::toNetwork, PandaRecipe.Serializer::fromNetwork
+		);
 
 		@Override
-		public Codec<PandaRecipe> codec() {
+		public MapCodec<PandaRecipe> codec() {
 			return CODEC;
 		}
 
-		@Nullable
 		@Override
-		public PandaRecipe fromNetwork(FriendlyByteBuf buffer) {
+		public StreamCodec<RegistryFriendlyByteBuf, PandaRecipe> streamCodec() {
+			return STREAM_CODEC;
+		}
+
+		public static PandaRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
 			String s = buffer.readUtf(32767);
-			Ingredient ingredient = Ingredient.fromNetwork(buffer);
-			ItemStack itemstack = buffer.readItem();
+			Ingredient ingredient = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
+			ItemStack itemstack = ItemStack.STREAM_CODEC.decode(buffer);
 			String hex = buffer.readUtf(32767);
 			float alpha = buffer.readFloat();
 			float chance = buffer.readFloat();
 			return new PandaRecipe(s, ingredient, itemstack, hex, alpha, chance);
 		}
 
-		@Override
-		public void toNetwork(FriendlyByteBuf buffer, PandaRecipe recipe) {
+		public static void toNetwork(RegistryFriendlyByteBuf buffer, PandaRecipe recipe) {
 			buffer.writeUtf(recipe.name);
-			recipe.ingredient.toNetwork(buffer);
-			buffer.writeItem(recipe.result);
+			Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.ingredient);
+			ItemStack.STREAM_CODEC.encode(buffer, recipe.result);
 			buffer.writeUtf(recipe.hexColor);
 			buffer.writeFloat(recipe.alpha);
 			buffer.writeFloat(recipe.chance);

@@ -11,32 +11,32 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import java.util.List;
 
 public class PandaDisplay implements Display {
-    private final RecipeHolder<PandaRecipe> recipeHolder;
-    private final List<EntryIngredient> inputEntries;
-    private final List<EntryIngredient> outputEntries;
+	private final RecipeHolder<PandaRecipe> recipeHolder;
+	private final List<EntryIngredient> inputEntries;
+	private final List<EntryIngredient> outputEntries;
 
-    public PandaDisplay(RecipeHolder<PandaRecipe> recipeHolder) {
-        this.recipeHolder = recipeHolder;
-        this.inputEntries = EntryIngredients.ofIngredients(recipeHolder.value().getIngredients());
-        this.outputEntries = List.of(EntryIngredients.of(recipeHolder.value().getResultItem(null).copy()));
-    }
+	public PandaDisplay(RecipeHolder<PandaRecipe> recipeHolder) {
+		this.recipeHolder = recipeHolder;
+		this.inputEntries = EntryIngredients.ofIngredients(recipeHolder.value().getIngredients());
+		this.outputEntries = List.of(EntryIngredients.of(recipeHolder.value().getResultItem(null).copy()));
+	}
 
-    public RecipeHolder<PandaRecipe> getRecipeHolder() {
-        return recipeHolder;
-    }
+	public RecipeHolder<PandaRecipe> getRecipeHolder() {
+		return recipeHolder;
+	}
 
-    @Override
-    public List<EntryIngredient> getInputEntries() {
-        return this.inputEntries;
-    }
+	@Override
+	public List<EntryIngredient> getInputEntries() {
+		return this.inputEntries;
+	}
 
-    @Override
-    public List<EntryIngredient> getOutputEntries() {
-        return this.outputEntries;
-    }
+	@Override
+	public List<EntryIngredient> getOutputEntries() {
+		return this.outputEntries;
+	}
 
-    @Override
-    public CategoryIdentifier<?> getCategoryIdentifier() {
-        return REIPlugin.PANDAS;
-    }
+	@Override
+	public CategoryIdentifier<?> getCategoryIdentifier() {
+		return REIPlugin.PANDAS;
+	}
 }

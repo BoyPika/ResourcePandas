@@ -10,15 +10,16 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.concurrent.CompletableFuture;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class ResourceDatagen {
 	@SubscribeEvent
 	public static void gatherData(GatherDataEvent event) {
@@ -68,7 +69,7 @@ public class ResourceDatagen {
 					.name("Netherite").color("#4c4143").alpha(1.0F).chance(0.06F).save(recipeOutput,
 							new ResourceLocation(Reference.MOD_ID, "netherite_panda"));
 
-			ResourceRecipeBuilder.resource(Ingredient.of(Tags.Items.STORAGE_BLOCKS_QUARTZ), Items.QUARTZ, 1)
+			ResourceRecipeBuilder.resource(Ingredient.of(Blocks.QUARTZ_BLOCK), Items.QUARTZ, 1)
 					.name("Quartz").color("#ddd4c6").alpha(1.0F).chance(0.6F).save(recipeOutput,
 							new ResourceLocation(Reference.MOD_ID, "quartz_panda"));
 

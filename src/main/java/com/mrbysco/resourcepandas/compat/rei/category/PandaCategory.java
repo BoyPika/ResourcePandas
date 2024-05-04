@@ -48,8 +48,8 @@ public class PandaCategory implements DisplayCategory<PandaDisplay> {
 			}
 		}), bounds.x, bounds.y - 2, 0));
 
-		widgets.add(Widgets.createSlot(new Point(bounds.getMinX() + 5, centerPoint.y - 8)).entries(display.getInputEntries().get(0)).markInput());
-		widgets.add(Widgets.createSlot(new Point(bounds.getMaxX() - 21, centerPoint.y - 8)).entries(display.getOutputEntries().get(0)).markOutput());
+		widgets.add(Widgets.createSlot(new Point(bounds.getMinX() + 5, centerPoint.y - 8)).entries(display.getInputEntries().getFirst()).markInput());
+		widgets.add(Widgets.createSlot(new Point(bounds.getMaxX() - 21, centerPoint.y - 8)).entries(display.getOutputEntries().getFirst()).markOutput());
 
 		return widgets;
 	}

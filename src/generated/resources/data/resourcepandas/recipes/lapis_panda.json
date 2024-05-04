@@ -3,11 +3,11 @@
   "chance": 0.6,
   "hexColor": "#345ec3",
   "ingredient": {
-    "tag": "forge:storage_blocks/lapis"
+    "tag": "c:storage_blocks/lapis"
   },
   "name": "Lapis",
   "result": {
     "count": 1,
-    "result": "minecraft:lapis_lazuli"
+    "id": "minecraft:lapis_lazuli"
   }
 }
