@@ -7,15 +7,15 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 
-public class PandaRecipe implements Recipe<Container> {
+public class PandaRecipe implements Recipe<SingleRecipeInput> {
 	protected final String name;
 	protected final Ingredient ingredient;
 	protected final ItemStack result;
@@ -38,12 +38,12 @@ public class PandaRecipe implements Recipe<Container> {
 	}
 
 	@Override
-	public boolean matches(Container inv, Level level) {
+	public boolean matches(SingleRecipeInput inv, Level level) {
 		return this.ingredient.test(inv.getItem(0));
 	}
 
 	@Override
-	public ItemStack assemble(Container inventory, HolderLookup.Provider provider) {
+	public ItemStack assemble(SingleRecipeInput inventory, HolderLookup.Provider provider) {
 		return getResultItem(provider);
 	}
 

@@ -6,13 +6,13 @@ import com.mrbysco.resourcepandas.recipe.PandaRecipes;
 import com.mrbysco.resourcepandas.registry.PandaRegistry;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Panda;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -26,7 +26,7 @@ public class ConversionHandler {
 			ItemStack heldStack = event.getItemStack();
 			Entity target = event.getTarget();
 			if (target.getType() == EntityType.PANDA) {
-				SimpleContainer inventory = new SimpleContainer(heldStack);
+				SingleRecipeInput inventory = new SingleRecipeInput(heldStack);
 				RecipeHolder<PandaRecipe> recipe = level.getRecipeManager().getRecipeFor(PandaRecipes.PANDA_RECIPE_TYPE.get(), inventory, level).orElse(null);
 				if (recipe != null) {
 //					ResourcePandas.LOGGER.info(recipe.getId());

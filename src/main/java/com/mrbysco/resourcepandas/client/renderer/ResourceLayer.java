@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.item.DyeColor;
 
@@ -31,29 +32,30 @@ public class ResourceLayer<T extends ResourcePandaEntity, M extends EntityModel<
 			entityModel.setupAnim(resourcePanda, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 			String hexColor = resourcePanda.getHexColor();
 
-			float red;
-			float green;
-			float blue;
+			int color;
+			int alpha = (int) (resourcePanda.getAlpha() * 255);
 			if (resourcePanda.hasCustomName() && "jeb_".equals(resourcePanda.getName().getString())) {
-				int i = resourcePanda.tickCount / 25 + resourcePanda.getId();
-				int j = DyeColor.values().length;
-				int k = i % j;
-				int l = (i + 1) % j;
-				float f3 = ((float) (resourcePanda.tickCount % 25) + partialTicks) / 25.0F;
-				float[] afloat1 = Sheep.getColorArray(DyeColor.byId(k));
-				float[] afloat2 = Sheep.getColorArray(DyeColor.byId(l));
-				red = afloat1[0] * (1.0F - f3) + afloat2[0] * f3;
-				green = afloat1[1] * (1.0F - f3) + afloat2[1] * f3;
-				blue = afloat1[2] * (1.0F - f3) + afloat2[2] * f3;
+				int k = resourcePanda.tickCount / 25 + resourcePanda.getId();
+				int l = DyeColor.values().length;
+				int i1 = k % l;
+				int j1 = (k + 1) % l;
+				float f = ((float) (resourcePanda.tickCount % 25) + partialTicks) / 25.0F;
+				int k1 = Sheep.getColor(DyeColor.byId(i1));
+				int l1 = Sheep.getColor(DyeColor.byId(j1));
+				color = FastColor.ARGB32.lerp(f, k1, l1);
 			} else {
-				red = getRed(hexColor);
-				green = getGreen(hexColor);
-				blue = getBlue(hexColor);
+				color = color(hexColor);
 			}
-			entityModel.renderToBuffer(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, red, green, blue, resourcePanda.getAlpha());
+			entityModel.renderToBuffer(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.color(alpha, color));
 		}
 	}
 
+	public int color(String hex) {
+		int red = Integer.valueOf(hex.substring(1, 3), 16);
+		int green = Integer.valueOf(hex.substring(3, 5), 16);
+		int blue = Integer.valueOf(hex.substring(5, 7), 16);
+		return FastColor.ARGB32.color(red, green, blue);
+	}
 
 	public float getRed(String hex) {
 		return hex.isEmpty() ? 0.0F : (float) Integer.valueOf(hex.substring(1, 3), 16) / 255F;

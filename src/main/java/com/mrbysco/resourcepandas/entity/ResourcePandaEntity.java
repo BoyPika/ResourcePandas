@@ -39,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class ResourcePandaEntity extends Panda {
-	private static final RecipeHolder<PandaRecipe> MISSING_RECIPE = new RecipeHolder<>(new ResourceLocation(Reference.MOD_ID, "missing"), new PandaRecipe("Missing", Ingredient.of(Items.EGG), new ItemStack(Items.EGG), "#ffd79a", 1.0F, 2.0F));
+	private static final RecipeHolder<PandaRecipe> MISSING_RECIPE = new RecipeHolder<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "missing"), new PandaRecipe("Missing", Ingredient.of(Items.EGG), new ItemStack(Items.EGG), "#ffd79a", 1.0F, 2.0F));
 
 	private static final EntityDataAccessor<String> RESOURCE_VARIANT = SynchedEntityData.defineId(ResourcePandaEntity.class, EntityDataSerializers.STRING);
 	private static final EntityDataAccessor<String> RESOURCE_COLOR = SynchedEntityData.defineId(ResourcePandaEntity.class, EntityDataSerializers.STRING);
@@ -96,7 +96,7 @@ public class ResourcePandaEntity extends Panda {
 			PandaRecipe recipe = getPandaRecipe().value();
 			setHexcolor(recipe.getHexColor());
 			setAlpha(recipe.getAlpha());
-			return new ResourceLocation(Reference.MOD_ID, variant);
+			return ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, variant);
 		}
 	}
 

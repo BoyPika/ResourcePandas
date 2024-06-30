@@ -1,8 +1,6 @@
 package com.mrbysco.resourcepandas.item;
 
 import com.mrbysco.resourcepandas.entity.ResourcePandaEntity;
-import com.mrbysco.resourcepandas.recipe.PandaRecipe;
-import com.mrbysco.resourcepandas.recipe.PandaRecipes;
 import com.mrbysco.resourcepandas.registry.PandaRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
@@ -17,7 +15,6 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -26,7 +23,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,8 +46,6 @@ public class PandaSpawnEggItem extends DeferredSpawnEggItem {
 				if (blockentity instanceof SpawnerBlockEntity spawnerblockentity) {
 					EntityType<ResourcePandaEntity> type = PandaRegistry.RESOURCE_PANDA.get();
 					if (resourceType != null) {
-						List<RecipeHolder<PandaRecipe>> recipes = new ArrayList<>(level.getRecipeManager().getAllRecipesFor(PandaRecipes.PANDA_RECIPE_TYPE.get()));
-						recipes.removeIf((recipe) -> !recipe.id().equals(resourceType));
 						ResourcePandaEntity panda = type.create(level);
 						if (panda != null) {
 							initializePanda(panda, resourceType);
