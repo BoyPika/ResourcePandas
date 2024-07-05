@@ -18,6 +18,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,8 +28,7 @@ import java.util.Objects;
 public class JEIPlugin implements IModPlugin {
 	private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "jei_plugin");
 
-	public static final ResourceLocation PANDAS = ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "pandas");
-	public static final RecipeType<RecipeHolder<PandaRecipe>> PANDA_RECIPE_TYPE = RecipeType.createFromVanilla(PandaRecipes.PANDA_RECIPE_TYPE.get());
+	public static final RecipeType<RecipeHolder<PandaRecipe>> PANDA_RECIPE_TYPE = createPandaType();
 
 	@Nullable
 	private IRecipeCategory<RecipeHolder<PandaRecipe>> pandaCategory;
@@ -56,5 +56,11 @@ public class JEIPlugin implements IModPlugin {
 	public void registerRecipes(IRecipeRegistration registration) {
 		ClientLevel world = Objects.requireNonNull(Minecraft.getInstance().level);
 		registration.addRecipes(PANDA_RECIPE_TYPE, world.getRecipeManager().getAllRecipesFor(PandaRecipes.PANDA_RECIPE_TYPE.get()));
+	}
+
+	public static <R extends Recipe<?>> RecipeType<RecipeHolder<R>> createPandaType() {
+		@SuppressWarnings({"unchecked", "RedundantCast"})
+		Class<? extends RecipeHolder<R>> holderClass = (Class<? extends RecipeHolder<R>>) (Object) RecipeHolder.class;
+		return new RecipeType<>(PandaRecipes.PANDA_RECIPE_TYPE.getId(), holderClass);
 	}
 }
